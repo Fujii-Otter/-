@@ -212,6 +212,36 @@
         </div>
     </div>
     <script>
+    //gas連携
+        async function fetchData(url, options) {
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+        // GASのurl
+const url = "https://script.google.com/macros/s/AKfycbx4XdCnveD9QBQJHfRXgnw15ljlaXxeHqDym9gH5YlrzfOKMDwwJrHEdVW2eAuG2n4kIQ/exec";
+const options = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    sheet: "シート名",
+    cell: "セル名",
+    value: "値",
+  }),
+};
+fetchData(url, options);
+
+
+
+
+
+        
         function toggleContent(id) {
             const content = document.getElementById(id);
             content.classList.toggle('show');
