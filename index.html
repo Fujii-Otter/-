@@ -189,6 +189,24 @@
     </div>
 
     <script>
+
+        function toggleContent(id) {
+            const content = document.getElementById(id);
+            content.classList.toggle('show');
+        }
+
+        function scrollToSection(id) {
+            // スクロール対象の要素を取得
+            const section = document.getElementById(id);
+            // スクロールする位置を設定（ヘッダーの高さ分だけ上に移動）
+            window.scrollTo({
+                top: section.offsetTop - document.querySelector('.header').offsetHeight,
+                behavior: 'smooth'
+            });
+        }
+
+
+
         const GAS_URL_GET = 'https://script.google.com/macros/s/AKfycbx4XdCnveD9QBQJHfRXgnw15ljlaXxeHqDym9gH5YlrzfOKMDwwJrHEdVW2eAuG2n4kIQ/exec'; // GAS のデータ取得 URL
         const GAS_URL_POST = 'YOUR_GAS_POST_URL'; // GAS のデータ追加 URL
 
