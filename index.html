@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -125,6 +126,7 @@
         }
     </style>
 </head>
+
 <body class="main">
     <div class="header">
         <img src="高尾山ロゴ.png" alt="" width="50" height="auto">
@@ -133,49 +135,130 @@
     <div class="fullBody">
         <img src="ヘッダー.jpg" style="width:100%; border-bottom: 1px solid #ddd; margin-bottom: 20px;">
         <!-- 省略したアコーディオン部分 -->
-
-        <div id="tableArea" style="margin-top:5%;">
-            <div style="display: flex;">
-                <span>持ち物チェックリスト</span>
-                <input type="button" id="plusButton" value="追加" style="margin-left: auto;margin-right: 3%;">
+        <div class="accordion" id="R">
+            <div class="subTitle" onclick="toggleContent('rContent')">
+                <h3>ルートについて</h3>
             </div>
-            <div id="nyuuryoku" style="display: none;">
-                <span style="font-size: small;color: gray;">追加したい持ち物を記入</span>
-                <div style="display: flex;">
-                    <input id="newitem" type="text" style="width: 70%;" placeholder="ラムネ">
-                    <input id="touroku" type="button" value="登録">
-                    <input id="cancel" type="button" value="キャンセル">
+            <div id="rContent" class="content">
+                <p></p>
+                <a href="https://yamap.com/magazine/54005" target="_blank">初心者おすすめルート</a>
+            </div>
+        </div>
+        <div class="accordion" id="I">
+            <div class="subTitle" onclick="toggleContent('iContent')">
+                <h3>持ち物</h3>
+            </div>
+            <div id="iContent" class="content">
+                <p></p>
+                <a href="https://yamahack.com/2959" target="_blank">もちものおすすめ</a>
+
+                <div id="tableArea" style="margin-top:5%;">
+                    <div style="display: flex;">
+                        <span>持ち物チェックリスト</span>
+                        <input type="button" id="plusButton" value="追加" style="margin-left: auto;margin-right: 3%;">
+                    </div>
+                    <div id="nyuuryoku" style="display: none;">
+                        <span style="font-size: small;color: gray;">追加したい持ち物を記入</span>
+                        <div style="display: flex;">
+                            <input id="newitem" type="text" style="width: 70%;" placeholder="ラムネ">
+                            <input id="touroku" type="button" value="登録">
+                            <input id="cancel" type="button" value="キャンセル">
+                        </div>
+                    </div>
+                    <img src="黒板＿上.png" alt="" style="width: 100%;">
+                    <div style="display: flex;">
+                        <img src="黒板＿左.png" class="kokuban">
+                        <table id="itemTable">
+                            <!-- データがここに挿入される -->
+                        </table>
+                        <img src="黒板‗右.png" class="kokuban">
+                    </div>
+                    <img src="黒板＿下.png" alt="" style="width: 100%;position: relative;top: -8px;">
                 </div>
             </div>
-            <img src="黒板＿上.png" alt="" style="width: 100%;">
-            <div style="display: flex;">
-                <img src="黒板＿左.png" class="kokuban">
-                <table id="itemTable">
-                    <!-- データがここに挿入される -->
-                </table>
-                <img src="黒板‗右.png" class="kokuban">
+        </div>
+        <div class="accordion" id="O">
+            <div class="subTitle" onclick="toggleContent('oContent')">
+                <h3>その他注意事項</h3>
             </div>
-            <img src="黒板＿下.png" alt="" style="width: 100%;position: relative;top: -8px;">
+            <div id="oContent" class="content">
+                <p></p>
+                <a href="https://www.yamakei-online.com/takao/prepare.php" target="_blank">服装について</a>
+            </div>
         </div>
     </div>
+
     <script>
-        // JavaScript コードをここに挿入
-        function doGet() {
-  var sheet = SpreadsheetApp.openById('1YTToOqgGujZWUvV0mEfJyBLB1kaR4Np1XfFV3Vr488M').getSheetByName('Sheet1');
-  var data = sheet.getDataRange().getValues();
-  
-  return ContentService.createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
-}
+        const GAS_URL_GET = 'https://script.google.com/macros/s/AKfycbx4XdCnveD9QBQJHfRXgnw15ljlaXxeHqDym9gH5YlrzfOKMDwwJrHEdVW2eAuG2n4kIQ/exec'; // GAS のデータ取得 URL
+        const GAS_URL_POST = 'YOUR_GAS_POST_URL'; // GAS のデータ追加 URL
 
-function doPost(e) {
-  var data = JSON.parse(e.postData.contents);
-  var sheet = SpreadsheetApp.openById('YOUR_SPREADSHEET_ID').getSheetByName('Sheet1');
-  sheet.appendRow([data.item, data.checked]); // 必要に応じてカラムを調整
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchData();
+        });
 
-  return ContentService.createTextOutput("Success");
-}
+        function fetchData() {
+            fetch(GAS_URL_GET)
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('itemTable');
+                    // テーブルの内容をクリア
+                    table.innerHTML = `
+          <colgroup>
+            <td style="width: 10%;"></td>
+            <td style="width: 10%;"></td>
+            <td style="width: 80%;"></td>
+          </colgroup>
+        `;
+
+                    // データをテーブルに追加
+                    data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+            <td class="item_list">${row[0]}</td>
+            <td class="item_list"><input type="checkbox" ${row[1] ? 'checked' : ''}></td>
+            <td class="item_list">${row[2]}</td>
+          `;
+                        table.appendChild(tr);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        document.getElementById('touroku').addEventListener('click', function () {
+            const newItem = document.getElementById('newitem').value;
+            const newChecked = document.querySelector('#itemTable input[type="checkbox"]').checked;
+
+            fetch(GAS_URL_POST, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ item: newItem, checked: newChecked })
+            })
+                .then(response => response.text())
+                .then(() => {
+                    fetchData(); // データを再取得
+                    document.getElementById('newitem').value = ''; // 入力フィールドをクリア
+                    document.getElementById('nyuuryoku').style.display = 'none'; // 入力エリアを隠す
+                })
+                .catch(error => console.error('Error posting data:', error));
+        });
+
+        document.getElementById('cancel').addEventListener('click', function () {
+            document.getElementById('nyuuryoku').style.display = 'none';
+        });
+
+        // 要素を取得
+        const tuika = document.getElementById('plusButton');//追加ボタン
+        const nyuuryoku = document.getElementById('nyuuryoku');//入力エリア
+
+        //追加
+        tuika.addEventListener('click', function () {
+            nyuuryoku.style.display = 'block'
+        });
 
     </script>
+
 </body>
+
 </html>
