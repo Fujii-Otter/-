@@ -189,7 +189,6 @@
     </div>
 
     <script>
-
         document.addEventListener('DOMContentLoaded', function () {
             fetchData();
         });
@@ -200,8 +199,10 @@
         }
 
         function fetchData() {
+            const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
             const GAS_URL_GET = 'https://script.google.com/macros/s/AKfycbwqSBz0FqCWEIpxeFAdpqykok_STperwyV_U8NVx4mrSKGrPYvuOMRrd-cDWH6imdpxYQ/exec';
-            fetch(GAS_URL_GET)
+
+            fetch(PROXY_URL + GAS_URL_GET)
                 .then(response => response.json())
                 .then(data => {
                     const table = document.getElementById('itemTable');
@@ -232,7 +233,7 @@
             const newItem = document.getElementById('newitem').value;
             const newChecked = document.querySelector('#itemTable input[type="checkbox"]').checked;
 
-            const GAS_URL_POST = 'YOUR_GAS_POST_URL'; // POST用のURLを設定
+            const GAS_URL_POST = 'https://script.google.com/macros/s/AKfycbwqSBz0FqCWEIpxeFAdpqykok_STperwyV_U8NVx4mrSKGrPYvuOMRrd-cDWH6imdpxYQ/exec'; // POST用のURLを設定
 
             fetch(GAS_URL_POST, {
                 method: 'POST',
