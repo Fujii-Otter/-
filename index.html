@@ -190,62 +190,49 @@
 
     <script>
 
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchData();
+        });
+
         function toggleContent(id) {
             const content = document.getElementById(id);
             content.classList.toggle('show');
         }
 
-        function scrollToSection(id) {
-            // スクロール対象の要素を取得
-            const section = document.getElementById(id);
-            // スクロールする位置を設定（ヘッダーの高さ分だけ上に移動）
-            window.scrollTo({
-                top: section.offsetTop - document.querySelector('.header').offsetHeight,
-                behavior: 'smooth'
-            });
-        }
-
-
-
-        const GAS_URL_GET = 'https://script.google.com/macros/s/AKfycbwqSBz0FqCWEIpxeFAdpqykok_STperwyV_U8NVx4mrSKGrPYvuOMRrd-cDWH6imdpxYQ/exec'; // 修正済みの URL
-        const GAS_URL_POST = 'YOUR_GAS_POST_URL'; // 修正済みの URL
-
-        document.addEventListener('DOMContentLoaded', function () {
-            fetchData();
-        });
-
         function fetchData() {
+            const GAS_URL_GET = 'https://script.google.com/macros/s/AKfycbwqSBz0FqCWEIpxeFAdpqykok_STperwyV_U8NVx4mrSKGrPYvuOMRrd-cDWH6imdpxYQ/exec';
             fetch(GAS_URL_GET)
                 .then(response => response.json())
                 .then(data => {
                     const table = document.getElementById('itemTable');
                     // テーブルの内容をクリア
                     table.innerHTML = `
-          <colgroup>
-            <td style="width: 10%;"></td>
-            <td style="width: 10%;"></td>
-            <td style="width: 80%;"></td>
-          </colgroup>
-        `;
+                <colgroup>
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                    <col style="width: 80%;">
+                </colgroup>
+            `;
 
                     // データをテーブルに追加
                     data.forEach(row => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-            <td class="item_list">${row[0]}</td>
-            <td class="item_list"><input type="checkbox" ${row[1] ? 'checked' : ''}></td>
-            <td class="item_list">${row[2]}</td>
-          `;
+                    <td class="item_list">${row[0]}</td>
+                    <td class="item_list"><input type="checkbox" ${row[1] ? 'checked' : ''}></td>
+                    <td class="item_list">${row[2]}</td>
+                `;
                         table.appendChild(tr);
                     });
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
 
-
         document.getElementById('touroku').addEventListener('click', function () {
             const newItem = document.getElementById('newitem').value;
             const newChecked = document.querySelector('#itemTable input[type="checkbox"]').checked;
+
+            const GAS_URL_POST = 'YOUR_GAS_POST_URL'; // POST用のURLを設定
 
             fetch(GAS_URL_POST, {
                 method: 'POST',
@@ -267,13 +254,12 @@
             document.getElementById('nyuuryoku').style.display = 'none';
         });
 
-        // 要素を取得
-        const tuika = document.getElementById('plusButton');//追加ボタン
-        const nyuuryoku = document.getElementById('nyuuryoku');//入力エリア
+        // 追加ボタンのクリックイベントリスナーを設定
+        const tuika = document.getElementById('plusButton');
+        const nyuuryoku = document.getElementById('nyuuryoku');
 
-        //追加
         tuika.addEventListener('click', function () {
-            nyuuryoku.style.display = 'block'
+            nyuuryoku.style.display = 'block';
         });
 
     </script>
