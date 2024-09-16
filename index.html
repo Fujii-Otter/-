@@ -212,36 +212,7 @@
         </div>
     </div>
     <script>
-    //gas連携
-        async function fetchData(url, options) {
-  try {
-    const response = await fetch(url, options);
-    const data = await response.json();
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
-
-        // GASのurl
-const url = "https://script.google.com/macros/s/AKfycbx4XdCnveD9QBQJHfRXgnw15ljlaXxeHqDym9gH5YlrzfOKMDwwJrHEdVW2eAuG2n4kIQ/exec";
-const options = {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    sheet: "シート名",
-    cell: "セル名",
-    value: "値",
-  }),
-};
-fetchData(url, options);
-
-
-
-
-
-        
+    
         function toggleContent(id) {
             const content = document.getElementById(id);
             content.classList.toggle('show');
@@ -283,7 +254,70 @@ fetchData(url, options);
         cancel.addEventListener('click', function () {
             nyuuryoku.style.display = 'none'
         });
-    </script>
+
+
+
+        //gas連携
+  const GAS_URL_GET = 'https://script.google.com/macros/s/AKfycbx4XdCnveD9QBQJHfRXgnw15ljlaXxeHqDym9gH5YlrzfOKMDwwJrHEdVW2eAuG2n4kIQ/exec'; // GAS のデータ取得 URL
+  const GAS_URL_POST = 'YOUR_GAS_POST_URL'; // GAS のデータ追加 URL
+
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchData();
+  });
+
+  function fetchData() {
+    fetch(GAS_URL_GET)
+      .then(response => response.json())
+      .then(data => {
+        const table = document.getElementById('itemTable');
+        // テーブルの内容をクリア
+        table.innerHTML = `
+          <colgroup>
+            <td style="width: 10%;"></td>
+            <td style="width: 10%;"></td>
+            <td style="width: 80%;"></td>
+          </colgroup>
+        `;
+        
+        // データをテーブルに追加
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="item_list">${row[0]}</td>
+            <td class="item_list"><input type="checkbox" ${row[1] ? 'checked' : ''}></td>
+            <td class="item_list">${row[2]}</td>
+          `;
+          table.appendChild(tr);
+        });
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }
+
+  document.getElementById('touroku').addEventListener('click', function() {
+    const newItem = document.getElementById('newitem').value;
+    const newChecked = document.querySelector('#itemTable input[type="checkbox"]').checked;
+    
+    fetch(GAS_URL_POST, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ item: newItem, checked: newChecked })
+    })
+    .then(response => response.text())
+    .then(() => {
+      fetchData(); // データを再取得
+      document.getElementById('newitem').value = ''; // 入力フィールドをクリア
+      document.getElementById('nyuuryoku').style.display = 'none'; // 入力エリアを隠す
+    })
+    .catch(error => console.error('Error posting data:', error));
+  });
+
+  document.getElementById('cancel').addEventListener('click', function() {
+    document.getElementById('nyuuryoku').style.display = 'none';
+  });
+</script>
+
 </body>
 
 </html>
