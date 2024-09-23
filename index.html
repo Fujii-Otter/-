@@ -107,11 +107,11 @@
             margin: 0;
         }
 
-        .item_list {
+        #dataTable {
             color: #EFEFEF;
         }
 
-        table {
+        #dataDisplay {
             border-collapse: collapse;
             width: 83%;
             position: relative;
@@ -160,19 +160,26 @@
                     <div id="nyuuryoku" style="display: none;">
                         <span style="font-size: small;color: gray;">追加したい持ち物を記入</span>
                         <div style="display: flex;">
-                            <input id="newitem" type="text" style="width: 70%;" placeholder="ラムネ">
-                            <input id="touroku" type="button" value="登録">
-                            <input id="cancel" type="button" value="キャンセル">
+                            <form id="registerForm">
+                                <input id="nameInput" type="text" style="width: 70%;" placeholder="ラムネ">
+                                <!-- <input id="touroku" type="button" value="登録"> -->
+                                <button type="submit">登録</button>
+                                <input id="cancel" type="button" value="キャンセル">
+                            </form>
                         </div>
                     </div>
                     <img src="黒板＿上.png" alt="" style="width: 100%;">
                     <div style="display: flex;">
                         <img src="黒板＿左.png" class="kokuban">
-                        <table>
-                            <div id="dataDisplay">
-                                <!-- データがここに挿入される -->
-                            </div>
-                        </table>
+
+                        <div id="dataDisplay">
+                            <table id="dataTable">
+                                <tbody>
+                                    <!-- データがここに追加される -->
+                                </tbody>
+                            </table>
+                        </div>
+
                         <img src="黒板‗右.png" class="kokuban">
                     </div>
                     <img src="黒板＿下.png" alt="" style="width: 100%;position: relative;top: -8px;">
@@ -195,8 +202,8 @@
             fetchData();
         });
 
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbxGWs65Zt7DDeOcqWZ9urLY_wmmS6AiT5MI5UCTK1AJ-7gv0uuCtpliMMcDQ8-T59Zxkg/exec'; // デプロイURLをここに入力
-
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbwcvZ8H-_HKxbdlvhNfqMAwJG8ICBScvauI-7lZwynvQa7DmkxC2l2Ro-ltno5phk9UNw/exec'; //GET
+        const sheetApiUrl = 'https://script.google.com/macros/s/AKfycbz3UEjGj3RiQ8rNzVKohWIBqEh38agTHUEOabNym3crsQnd30C9Gx0Joku37md2yEFl/exec';//POST
 
         function fetchData() {
             fetch(apiUrl)
@@ -207,9 +214,23 @@
                     return response.json();
                 })
                 .then(data => {
-                    const output = data.map(item => `${item.ID}: ${item.名前}`).join('<br>');
-                    document.getElementById('dataDisplay').innerHTML = output;
                     console.log('データ取得成功:', data); // デバッグ用ログ
+                    const tbody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+                    tbody.innerHTML = ''; // 既存の行をクリア
+
+                    data.forEach(item => {
+                        const row = tbody.insertRow();
+
+                        // チェックボックスのセルを追加
+                        const checkboxCell = row.insertCell(0);
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkboxCell.appendChild(checkbox);
+
+                        // 名前のセルを追加
+                        const nameCell = row.insertCell(1);
+                        nameCell.textContent = item.名前;
+                    });
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -253,6 +274,41 @@
         cancel.addEventListener('click', function () {
             nyuuryoku.style.display = 'none'
         });
+
+
+
+        function registerData(event) {
+            event.preventDefault(); // フォームのデフォルト動作をキャンセル
+            const nameInput = document.getElementById('nameInput').value;
+
+            const data = {
+                name: nameInput
+            };
+
+            fetch(sheetApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('ネットワークエラー');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    console.log('登録成功:', result);
+                    fetchData(); // データを再取得して更新
+                    document.getElementById('registerForm').reset(); // フォームをリセット
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', registerData);
 
     </script>
 
