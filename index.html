@@ -254,6 +254,7 @@
 
                     // 削除ボタンのセルを追加
                         const deleteCell = row.insertCell(2);
+                        deleteCell.style.textAlign = 'right';
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = '削除';
                         deleteButton.className = 'dltBtn';
