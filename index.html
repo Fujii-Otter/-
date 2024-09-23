@@ -240,7 +240,7 @@
                         // 名前のセルを追加
                         const nameCell = row.insertCell(1);
                         nameCell.textContent = item.名前;
-                    });
+                    
 
                     // 削除ボタンのセルを追加
                         const deleteCell = row.insertCell(2);
@@ -256,7 +256,8 @@
                                 body: `action=delete&rowIndex=${rowIndex}`,
                                 });
                             row.remove(); // 行を削除
-                        };                        
+                        };
+                    });
                 })
                 .catch(error => {
                     console.error('Error:', error);
