@@ -289,39 +289,22 @@
 
 
 
-        function registerData(event) {
-            event.preventDefault(); // フォームのデフォルト動作をキャンセル
-            const nameInput = document.getElementById('nameInput').value;
+       document.getElementById('dataForm').onsubmit = async function(event) {
+            event.preventDefault(); // フォームのデフォルト動作を防ぐ
+            
+            const name = document.getElementById('name').value;
 
-            const data = {
-                name: nameInput
-            };
-
-            fetch(sheetApiUrl, {
+            const response = await fetch('YOUR_WEB_APP_URL', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify(data)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('ネットワークエラー');
-                    }
-                    return response.json();
-                })
-                .then(result => {
-                    console.log('登録成功:', result);
-                    fetchData(); // データを再取得して更新
-                    document.getElementById('registerForm').reset(); // フォームをリセット
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
+                body: `name=${encodeURIComponent(name)}`,
+            });
 
-        document.getElementById('registerForm').addEventListener('submit', registerData);
-
+            const result = await response.json();
+            document.getElementById('message').textContent = result.result;
+        };
     </script>
 
 </body>
