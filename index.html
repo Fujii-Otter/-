@@ -252,7 +252,7 @@
                         const deleteCell = row.insertCell(2);
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = '削除';
-                        deleteButton.class = 'dltBtn';
+                        deleteButton.className = 'dltBtn';
                         deleteButton.onclick = async function() {
                             const rowIndex = tbody.rows.length; // 現在の行数を取得
                             await fetch(sheetApiUrl, {
