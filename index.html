@@ -168,9 +168,11 @@
                     <img src="黒板＿上.png" alt="" style="width: 100%;">
                     <div style="display: flex;">
                         <img src="黒板＿左.png" class="kokuban">
-                        <div id="dataDisplay">
-                            <!-- データがここに挿入される -->
-                        </div>
+                        <table>
+                            <div id="dataDisplay">
+                                <!-- データがここに挿入される -->
+                            </div>
+                        </table>
                         <img src="黒板‗右.png" class="kokuban">
                     </div>
                     <img src="黒板＿下.png" alt="" style="width: 100%;position: relative;top: -8px;">
@@ -196,27 +198,27 @@
         const apiUrl = 'https://script.google.com/macros/s/AKfycbxGWs65Zt7DDeOcqWZ9urLY_wmmS6AiT5MI5UCTK1AJ-7gv0uuCtpliMMcDQ8-T59Zxkg/exec'; // デプロイURLをここに入力
 
 
-       function fetchData() {
-    fetch(apiUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('ネットワークエラー');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const output = data.map(item => `${item.ID}: ${item.名前}`).join('<br>');
-            document.getElementById('dataDisplay').innerHTML = output;
-            console.log('データ取得成功:', data); // デバッグ用ログ
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('dataDisplay').innerText = 'データ取得に失敗しました。';
-        });
-}
+        function fetchData() {
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('ネットワークエラー');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const output = data.map(item => `${item.ID}: ${item.名前}`).join('<br>');
+                    document.getElementById('dataDisplay').innerHTML = output;
+                    console.log('データ取得成功:', data); // デバッグ用ログ
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('dataDisplay').innerText = 'データ取得に失敗しました。';
+                });
+        }
 
 
-        
+
 
         function toggleContent(id) {
             const content = document.getElementById(id);
