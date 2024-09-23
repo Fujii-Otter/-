@@ -241,6 +241,22 @@
                         const nameCell = row.insertCell(1);
                         nameCell.textContent = item.名前;
                     });
+
+                    // 削除ボタンのセルを追加
+                        const deleteCell = row.insertCell(2);
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = '削除';
+                        deleteButton.onclick = async function() {
+                            const rowIndex = tbody.rows.length; // 現在の行数を取得
+                            await fetch(sheetApiUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                },
+                                body: `action=delete&rowIndex=${rowIndex}`,
+                                });
+                            row.remove(); // 行を削除
+                        };                        
                 })
                 .catch(error => {
                     console.error('Error:', error);
