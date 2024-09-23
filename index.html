@@ -212,12 +212,41 @@
         });
 }
 
-        // 追加ボタンのクリックイベントリスナーを設定
-        const tuika = document.getElementById('plusButton');
-        const nyuuryoku = document.getElementById('nyuuryoku');
 
+        
+
+        function toggleContent(id) {
+            const content = document.getElementById(id);
+            content.classList.toggle('show');
+        }
+
+        function scrollToSection(id) {
+            // スクロール対象の要素を取得
+            const section = document.getElementById(id);
+            // スクロールする位置を設定（ヘッダーの高さ分だけ上に移動）
+            window.scrollTo({
+                top: section.offsetTop - document.querySelector('.header').offsetHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        // 要素を取得
+        const tuika = document.getElementById('plusButton');//追加ボタン
+        const touroku = document.getElementById('touroku');//登録ボタン
+        const cancel = document.getElementById('cancel');//キャンセルボタン
+        const nyuuryoku = document.getElementById('nyuuryoku');//入力エリア
+        const itemTable = document.getElementById('itemTable');//持ち物リストテーブル
+
+
+        // クリックイベントを追加
+        //追加
         tuika.addEventListener('click', function () {
-            nyuuryoku.style.display = 'block';
+            nyuuryoku.style.display = 'block'
+        });
+
+        //キャンセル
+        cancel.addEventListener('click', function () {
+            nyuuryoku.style.display = 'none'
         });
 
     </script>
