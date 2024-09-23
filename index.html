@@ -290,7 +290,7 @@
        document.getElementById('registerForm').onsubmit = async function(event) {
             event.preventDefault(); // フォームのデフォルト動作を防ぐ
             
-            const name = document.getElementById('name').value;
+            const name = document.getElementById('nameInput').value;
 
             const response = await fetch('https://script.google.com/macros/s/AKfycbw2L-ALAd1ImAuFmeB5cTDCSWTbSUBMYiZRlofDrIybDZXOZIi6dN-bVEJN1FcgtoLjaw/exec', {
                 method: 'POST',
@@ -301,7 +301,7 @@
             });
 
             const result = await response.json();
-            document.getElementById('message').textContent = result.result;
+            // document.getElementById('message').textContent = result.result;
         };
     </script>
 
